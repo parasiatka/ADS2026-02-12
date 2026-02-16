@@ -45,7 +45,7 @@ public class FiboA {
 
     BigInteger slowA(Integer n) {
 
-        if(n < 0) { return BigInteger.ZERO; }
+        if(n < 1) { return BigInteger.ZERO; }
         if(n == 1) { return BigInteger.ONE; }
         else {
             return slowA(n - 2).add(slowA( n - 1));
