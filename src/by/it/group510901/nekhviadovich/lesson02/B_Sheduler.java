@@ -1,6 +1,8 @@
 package by.it.group510901.nekhviadovich.lesson02;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 /*
 Даны интервальные события events
@@ -31,11 +33,52 @@ public class B_Sheduler {
         //Начало и конец событий могут совпадать.
         List<Event> result;
         result = new ArrayList<>();
-        //ваше решение.
 
 
-        return result;          //вернем итог
+
+        Arrays.sort(events, new SortByStop());
+
+        int index = 0;
+        Event temp;
+        do{
+            temp = events[index];
+            index++;
+        }while(temp.start < from || index == events.length);
+        result.add(temp);
+
+        for (int i = 0; i < events.length; i++){
+
+            Event tempEvent = FindEarliestEvent(events, result.getLast().stop, to);
+            if(tempEvent == null) continue;
+            result.add(tempEvent);
+        }
+
+
+        return result;
     }
+
+    Event FindEarliestEvent(Event[] events, int startBorder, int toBorder){
+        Event result = null;
+
+        for (int i = 0; i < events.length; i++){
+            if(events[i].start >= startBorder && events[i].start <= toBorder){
+                result = events[i];
+                //events[i] = null;
+                break;
+            }
+        }
+        return result;
+    }
+
+    static class SortByStop implements Comparator<Event> {
+        public int compare(Event a, Event b) {
+            if ( a.stop < b.stop ) return -1;
+            else if ( a.stop == b.stop ) return 0;
+            else return 1;
+        }
+    }
+
+
 
     //событие у аудитории(два поля: начало и конец)
     static class Event {

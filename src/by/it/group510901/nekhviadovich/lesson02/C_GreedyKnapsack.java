@@ -50,9 +50,56 @@ public class C_GreedyKnapsack {
 
         //ваше решение.
 
+        quickSort(items, 0, items.length-1);
+
+        int weightLeft = W;
+        for(int i = items.length-1; i >= 0; i--){
+
+            if(items[i].weight >= weightLeft) {
+                result += calcSpecificCost(items[i]) * weightLeft;
+                break;
+            }
+            weightLeft -= items[i].weight;
+            result += items[i].cost;
+
+        }
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
+    }
+
+    private static void quickSort(Item[] items, int startBorder, int endBorder){
+        if(endBorder <= startBorder) return;
+        int pivot = startBorder;
+        int left = startBorder + 1;
+        int right = endBorder;
+
+        while (left <= right) {
+            while(left <= right && items[pivot].compareTo(items[left]) >= 0){
+                left++;
+            }
+            while(left <= right && right > startBorder && items[pivot].compareTo(items[right]) <= 0 ){
+                right--;
+            }
+            if(left < right){
+                Item temp = items[left];
+                items[left] = items[right];
+                items[right] = temp;
+            }
+        }
+        Item temp = items[pivot];
+        items[pivot] = items[right];
+        items[right] = temp;
+        pivot = right;
+
+        quickSort(items, startBorder, pivot - 1 );
+        quickSort(items, pivot + 1, endBorder);
+    }
+
+    private static double calcSpecificCost(Item item){
+        double cost = item.cost;
+        double weight = item.weight;
+        return cost / weight; // [$/kg]
     }
 
     private static class Item implements Comparable<Item> {
@@ -74,10 +121,19 @@ public class C_GreedyKnapsack {
 
         @Override
         public int compareTo(Item o) {
-            //тут может быть ваш компаратор
+            double specThis = calcSpecificCost(this);
+            double specO = calcSpecificCost(o);
 
-
-            return 0;
+            if(specThis > specO) {
+                return 1;
+            }
+            else if (specThis < specO) {
+                return -1;
+            }
+            else {
+                return 0;
+            }
         }
     }
+
 }
